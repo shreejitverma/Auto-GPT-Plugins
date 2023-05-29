@@ -202,7 +202,4 @@ class TestRandomValueCommands:
 # checks that the given string only contains ascii letters, digits & punctuation
 def is_password(input_str):
     characters = string.ascii_letters + string.digits + string.punctuation
-    for character in input_str:
-        if character not in characters:
-            return False
-    return True
+    return all(character in characters for character in input_str)

@@ -36,7 +36,7 @@ def _make_api_call(
         """Remove potentially harmful characters from the string."""
 
         return re.sub(r'[^a-zA-Z0-9_: -{}[\],"]', '', input_string)
-    
+
     # End of sanitize_string()
 
 
@@ -46,10 +46,10 @@ def _make_api_call(
         data = json.loads(input_string)
         sanitized_data = {sanitize_string(k): sanitize_string(str(v)) for k, v in data.items()}
         return json.dumps(sanitized_data)
-    
+
     # End of sanitize_json()
 
-    
+
     def sanitize(input_string: str) -> str:
         """Remove potentially harmful characters from the input string."""
 
@@ -68,15 +68,15 @@ def _make_api_call(
     # Type-check inputs - host
     if not isinstance(host, str):
         raise ValueError("host must be a string")
-    
+
     # Type-check inputs - endpoint
     if not isinstance(endpoint, str):
         raise ValueError("endpoint must be a string")
-    
+
     # Type-check inputs - method
     if not isinstance(method, str):
         raise ValueError("method must be a string")
-    
+
     # Type-check inputs - query_params
     if not query_params:
         query_params = {}
@@ -105,7 +105,7 @@ def _make_api_call(
             body = str(body)
         except ValueError:
             raise ValueError("body must be a string")
-        
+
     # Type-check inputs - headers
     if not headers:
         headers = {}
@@ -127,7 +127,7 @@ def _make_api_call(
         headers = new_headers
     else:
         raise ValueError("headers must be a dictionary or a JSON string")
-        
+
     # Type-check inputs - timeout_secs
     if timeout_secs is None:
         raise ValueError("timeout_secs must be an integer")
@@ -146,18 +146,18 @@ def _make_api_call(
         sanitized_host = f"https://{sanitized_host}"
     url = urljoin(sanitized_host, sanitized_endpoint)
     if not is_valid_url(url):
-        raise ValueError("Invalid URL: " + url)
-    
+        raise ValueError(f"Invalid URL: {url}")
+
     # Validate method
     allowed_methods = ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"]
-    sanitized_method = sanitize(method).upper()    
+    sanitized_method = sanitize(method).upper()
     if sanitized_method not in allowed_methods:
-        raise ValueError("Invalid method: " + sanitized_method)
+        raise ValueError(f"Invalid method: {sanitized_method}")
 
     # Validate timeout_secs
-    if not timeout_secs > 0:
+    if timeout_secs <= 0:
         raise ValueError("timeout_secs must be a positive integer")
-    
+
     # Make the request
     try:
         if sanitized_method == "GET":
@@ -175,8 +175,8 @@ def _make_api_call(
         elif sanitized_method == "PATCH":
             response = requests.patch(url, params=query_params, json=body, headers=headers, timeout=timeout_secs)
         else:
-            raise ValueError("Invalid method: " + method)
-        
+            raise ValueError(f"Invalid method: {method}")
+
         response_text = response.text
         response = {
             "status": "success",
