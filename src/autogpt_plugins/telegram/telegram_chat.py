@@ -18,7 +18,7 @@ class TelegramUtils:
 
     def handle_response(self, update: Update, context: CallbackContext):
         try:
-            print("Received response: " + update.message.text)
+            print(f"Received response: {update.message.text}")
 
             if self.is_authorized_user(update):
                 response_queue.put(update.message.text)
@@ -100,7 +100,7 @@ class TelegramUtils:
         response_queue = ""
         # await delete_old_messages()
 
-        print("Asking user: " + question)
+        print(f"Asking user: {question}")
         self.send_message(message=question)
 
         print("Waiting for response on Telegram chat...")
@@ -141,7 +141,7 @@ class TelegramUtils:
         else:
             response_text = response_queue
 
-        print("Response received from Telegram: " + response_text)
+        print(f"Response received from Telegram: {response_text}")
         return response_text
 
     async def _poll_updates(self):
@@ -149,11 +149,7 @@ class TelegramUtils:
         bot = await self.get_bot()
 
         last_update = await bot.get_updates(timeout=30)
-        if len(last_update) > 0:
-            last_update_id = last_update[-1].update_id
-        else:
-            last_update_id = 0
-
+        last_update_id = last_update[-1].update_id if len(last_update) > 0 else 0
         while True:
             try:
                 print("Polling updates...")
@@ -170,7 +166,7 @@ class TelegramUtils:
             await asyncio.sleep(1)
 
     def ask_user(self, prompt):
-        print("Asking user: " + prompt)
+        print(f"Asking user: {prompt}")
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError:  # 'RuntimeError: There is no current event loop...'
