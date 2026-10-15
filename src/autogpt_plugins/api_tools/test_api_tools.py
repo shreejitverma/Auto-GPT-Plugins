@@ -490,8 +490,7 @@ class TestAutoGPTAPITools():
 
     def test_api_call_headers_with_invalid_key(self):
         """Test the _make_api_call() function with headers that have an invalid key."""
-        headers = {'test': 'test'}
-        headers[1] = 'test'
+        headers = {'test': 'test', 1: 'test'}
         with requests_mock.Mocker() as m:
             m.get('http://example.com/endpoint', text='success', status_code=200, request_headers={'test': 'test', '1': 'test'})
             result = _make_api_call('http://example.com', '/endpoint', headers=headers)
@@ -501,8 +500,7 @@ class TestAutoGPTAPITools():
 
     def test_api_call_headers_with_invalid_value(self):
         """Test the _make_api_call() function with headers that have an invalid value."""
-        headers = {'test': 'test'}
-        headers['test'] = 1
+        headers = {'test': 1}
         with requests_mock.Mocker() as m:
             m.get('http://example.com/endpoint', text='success', status_code=200, request_headers={'test': '1'})
             result = _make_api_call('http://example.com', '/endpoint', headers=headers)
